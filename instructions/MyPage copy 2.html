@@ -1,0 +1,36 @@
+{{ block title }}
+    Example 1
+{{ endblock }}
+{{ block content }}
+
+    <div>
+        The randomly chosen Type 1 Solver decides to make the Type 2 Solvers ineligible to participate in Activities.
+    </div>
+
+    <div>
+        The Assigner assigns 4 Type 1 Solvers to Activity A, and 2 Type 1 Solvers to Activity B.
+    </div>
+
+    <div>
+        Note that during assigning to the activity Assigner only can see the Solver’s color, not the Type.
+    </div>
+
+    <div>
+        If a Solver completes 50 questions in the 30 seconds time period during Activity A, the Solver earns  (50)($0.5) = $25. 
+    </div>
+
+    <div>
+        If a Solver solves 40 questions in Activity B, the Solver earns (40)($0.25)= $10.
+    </div>
+
+    <div>
+        Suppose the total completed Activity A and Activity B by Solvers are 200 and 160. In that case, the Assigner’s round earnings are:
+    </div>
+
+    <h3>
+        (0.8*200 + 0.5*160)-(0.5)(200)-(0.25)(160)= $100.
+    </h3>
+
+    {{ next_button }}
+
+{{ endblock }}

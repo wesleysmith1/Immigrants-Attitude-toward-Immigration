@@ -1,0 +1,16 @@
+{{ block title }}
+    Solve the problem
+{{ endblock }}
+{{ block content }}
+
+    {{ formfields }}
+    {{ next_button }}
+
+<script>
+    let numberProblems = {{number_problems}}
+    $( document ).ready(function() {
+        liveSend(99);
+    });
+</script>
+
+{{ endblock }}

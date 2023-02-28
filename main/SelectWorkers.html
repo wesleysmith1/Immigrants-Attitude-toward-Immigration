@@ -1,0 +1,118 @@
+{{ block title }}
+    Select the workers you want to be the workers.
+{{ endblock }}
+{{ block content }}
+
+<style>
+    .box {
+        width: 100px;
+        height: 100px;
+        background: red;
+    }
+    .selectionBox {
+        height: 400px;
+    }
+    #start {
+        display: flex; 
+        justify-content: space-between;
+    }
+    .center {
+        text-align: center;
+    }
+</style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/Draggable.min.js" integrity="sha512-cGS9y5MepPe9pI2nibL3W1n4ImVcgcvipKjl0IXmgMgXlrwIX0bc2lm4QgMRtEnyN+k/ct0a5iCaqo9cXYgNGA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <div id="container">
+
+        <div id="start" class="">
+            {{ for id in selected_ids}}
+                {{ if id in C.BLUE_GROUP }}
+                    <img id="p{{id}}" src="{{ static 'global/images/bluePerson.PNG' }}"/>
+                {{ else }}
+                    <img id="p{{id}}" src="{{ static 'global/images/greenPerson.PNG' }}"/>
+                {{ endif }}
+            {{ endfor }}
+        </div>
+    
+        <div class="row" style="height: 500px;">
+            <div id="jobA" class="m-1 p-1 col container border center">
+                <h3>Job A</h3>
+            </div>
+            <div id="jobB" class="m-1 p-1 col container border center">
+                <h3>Job B</h3>
+            </div>
+        </div>
+    </div>
+    
+    
+    {{ formfields }}
+
+    <button id="validate" type="button">Next</button>
+    
+    <div style="display: none;">
+        <button id="submit">hidden submit</button>
+    </div>
+
+    <script>
+
+        let selectedIDs = {{selected_ids}}
+        let selectedJobA = []
+        let selectedJobB = []
+
+        function removeFromJob(id) {
+            // make sure if item is moved and does not land on a list it is removed from all jobs
+            const indexA = selectedJobA.indexOf(id);
+            if (indexA > -1) { // only splice array when item is found
+                selectedJobA.splice(indexA, 1); // 2nd parameter means remove one item only
+            }
+            const indexB = selectedJobB.indexOf(id);
+            if (indexB > -1) { // only splice array when item is found
+                selectedJobB.splice(indexB, 1); // 2nd parameter means remove one item only
+            }
+        }
+
+        function nextPage() {
+            $("#submit").click()
+        }
+        
+        $( document ).ready(function() {
+
+            $( "#validate" ).click(function() {
+                if (selectedIDs.length == selectedJobA.length + selectedJobB.length) {
+                    liveSend({ job_a : selectedJobA, job_b : selectedJobB })
+                    nextPage()
+                } else {
+                    alert("Please assign everyone to a job.")
+                }
+            });
+
+            for (key in selectedIDs) {
+                Draggable.create("#p" + selectedIDs[key], {
+                    type:"x,y", 
+                    edgeResistance:0.65, 
+                    bounds:"#container", 
+                    inertia:true,
+                    onDragEnd: function() {
+
+                        let id = parseInt(this.target.id[1])
+                        removeFromJob(id)
+                        
+                        if (this.hitTest("#jobA", "90%")) {
+                            selectedJobA.push(id)
+                        } else if (this.hitTest("#jobB", "90%")) {
+                            selectedJobB.push(id)
+                        } else {
+                            // return to start
+                            gsap.to(this.target, 0, {x: 0, y: 0})
+                            // remove id from any lists it was in
+                        }
+                    },
+                });
+            }
+        });
+
+    </script>
+
+{{ endblock }}

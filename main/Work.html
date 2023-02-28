@@ -1,0 +1,57 @@
+{{ block title }}
+    Solve the problem below
+{{ endblock }}
+{{ block content }}
+
+    <form id="workForm">
+        <div id="problem">
+            <span id="a"></span>
+            <span> x </span>
+            <span id="b"></span>
+        </div>
+        <br>
+        <div class="input-group">
+            <input id="answer" type="text" class="form-control" placeholder="">
+        </div>
+        <br>
+        <button id="workSubmit" class="btn btn-primary" type="button">Submit</button>
+    </form>
+
+    <br>
+
+
+<script>
+    let a, b;
+    function randomInt() {
+        // random integer between 2 and 9
+        return Math.floor(Math.random() * 8) + 2;
+
+    }
+    function generateProblem() {
+        a = randomInt()
+        b = randomInt()
+        $("#a").text(a)
+        $("#b").text(b)
+    }
+    function clearForm() {
+        $("#answer").val("")
+    }
+    function checkAnswer() {
+        if (a*b == $("#answer").val()) {
+            liveSend({});
+        }
+        clearForm()
+        generateProblem()
+    }
+    let numberProblems = {{number_problems}}
+
+    $( document ).ready(function() {
+        $( "#workSubmit" ).click(function( event ) {
+            event.preventDefault();
+            checkAnswer()
+        });
+        generateProblem()
+    });
+</script>
+
+{{ endblock }}
