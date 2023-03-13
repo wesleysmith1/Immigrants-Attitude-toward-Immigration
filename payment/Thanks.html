@@ -1,0 +1,22 @@
+{{ block title }}
+    Thank you
+{{ endblock }}
+{{ block content }}
+
+    <p>
+        Thank you for your participation in this study.
+    </p>
+
+    <p>
+        You earned {{player.payoff}} from this game and {{player.participation_fee}}. Thus you earned a total of {{player.payoff_plus_participation}}.
+    </p>
+
+    <p>
+        Please enter your name as you would like to be called for payment. This will be only used for payment purposes and will not be associated with any of your responses.
+    </p>
+
+    {{ formfields }}
+
+    {{ next_button }}
+
+{{ endblock }}

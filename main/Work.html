@@ -3,6 +3,10 @@
 {{ endblock }}
 {{ block content }}
 
+    <p>Now you will perform multiplication activities assigned by the Assigner for the next thirty seconds. Complete as much as you can.</p>
+
+    <p>Find the product of the two following numbers.</p>
+
     <form id="workForm">
         <div id="problem">
             <span id="a"></span>
@@ -18,14 +22,17 @@
     </form>
 
     <br>
-
-
-<script>
+    
+    
+    <script>
+    
     let a, b;
+    let numberProblems = {{number_problems}}
+    let problemCount = 0
+    
     function randomInt() {
         // random integer between 2 and 9
         return Math.floor(Math.random() * 8) + 2;
-
     }
     function generateProblem() {
         a = randomInt()
@@ -38,12 +45,17 @@
     }
     function checkAnswer() {
         if (a*b == $("#answer").val()) {
-            liveSend({});
+            problemCount++
+            if (problemCount == numberProblems) {
+                liveSend({});
+                problemCount=0
+            }
+        } else  {
+            problemCount = 0
         }
         clearForm()
         generateProblem()
     }
-    let numberProblems = {{number_problems}}
 
     $( document ).ready(function() {
         $( "#workSubmit" ).click(function( event ) {
@@ -51,6 +63,13 @@
             checkAnswer()
         });
         generateProblem()
+    });
+    $("#answer").bind("keypress", function(event) {
+        if(event.which == 13) {
+            event.preventDefault();
+            // TRIGGER YOUR FUNCTION
+            checkAnswer()
+        }
     });
 </script>
 

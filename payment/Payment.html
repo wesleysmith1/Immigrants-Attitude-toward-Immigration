@@ -1,0 +1,35 @@
+{{ block title }}
+    Results for all rounds
+{{ endblock }}
+{{ block content }}
+
+    <p>
+        Round {{payment_round}} was chosen for payment. This means you earned {{player.payoff}} from this game.
+    </p>
+
+    <p>
+        Below are the payments for all 15 rounds.
+    </p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Round Number</th>
+                <th>Your role</th>
+                <th>Your payoff</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{ for i in round_results }}
+                <tr {{if i.round == payment_round}}class="table-warning"{{endif}}>
+                    <td>{{i.round}}</td>
+                    <td>{{i.role}}</td>
+                    <td>{{i.payoff}}</td>
+                </tr>
+            {{ endfor }}
+        </tbody>
+    </table>
+
+    {{ next_button }}
+
+{{ endblock }}

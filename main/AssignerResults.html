@@ -1,0 +1,36 @@
+{{ block title }}
+    Results of round {{player.round_number}}
+{{ endblock }}
+
+{{ block content }}
+
+    <div>
+        Your role in this round was Assigner
+    </div>
+
+    {{if group.allow_type_two }}
+        <div>
+            Decision made my Type 1: <u> Let the Type 2 solvers in.</u>
+        </div>
+    {{else}}
+        <div>
+            Decision made my Type 1: <u> Did not let the Type 2 solvers in.</u>
+        </div>
+    {{endif}}
+
+    <div>
+        You selected {{total_a_solvers}} Solver(s) for Activity A and {{total_b_solvers}} Solver(s) for Activity B
+    </div>
+
+    <div>
+        Solvers have completed {{total_a_problems}} Activity A and {{total_b_problems}} Activty B in this round
+    </div>
+
+    <div>
+        The total completed activities in this round are {{total_problems_solved}}.
+    </div> 
+
+    {{ next_button }}
+{{ endblock }}
+
+

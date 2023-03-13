@@ -11,7 +11,7 @@ Your app description
 class C(BaseConstants):
     NAME_IN_URL = 'main'
     PLAYERS_PER_GROUP = 9
-    NUM_ROUNDS = 13
+    NUM_ROUNDS = 2 #13
 
     GREEN = 'Green'
     BLUE = 'Blue'
@@ -48,7 +48,7 @@ class Player(BasePlayer):
     # payment per math problem(s) completed
     marginal_pay = models.FloatField(initial=None)
     # total math plrobelms solved (1 or 2 depending on type and color)
-    problems_solved = models.IntegerField(Initial=None)
+    problems_solved = models.IntegerField(initial=0)
 
     def set_color(self):
         if self.id_in_group == 1:
@@ -61,22 +61,26 @@ class Player(BasePlayer):
 
     def number_problems(self):
         if self.field_maybe_none('type') == 1 and self.job == C.JOB_A:
-            return 2
+            return 3
         else:
             return 1
 
 # FUNCTIONS
 def creating_session(subsession: Subsession):
 
+    import random
+    subsession.session.vars['payment_round'] = random.randint(2, C.NUM_ROUNDS)
+
     if subsession.round_number == 1:
         subsession.session.vars['blue_type_2'] = random.choices(C.BLUE_GROUP, k=2)
 
     for player in subsession.get_players():
+        player.participant.vars['round_results'] = []
         player.set_color()
 
-        if player.color == C.GREEN:
+        if player.field_maybe_none('color') == C.GREEN:
             player.type = 1
-        elif player.color == C.BLUE:
+        elif player.field_maybe_none('color') == C.BLUE:
             # = 2 if player.id_in_group in blue_type_1 else 1
             if player.id_in_group in subsession.session.vars['blue_type_2']:
                 player.type = 2
@@ -106,7 +110,7 @@ class Wait(WaitPage):
         group.allow_type_two = [p.allow_type_two for p in group.get_players() if p.id_in_group == group.green_decision_maker][0]
 
         if not group.allow_type_two:
-            players = [ p for p in group.get_players() if p. field_maybe_none('type') == 2 ]
+            players = [ p for p in group.get_players() if p.field_maybe_none('type') == 2 ]
             for player in players:
                 player.selected=False
 
@@ -136,7 +140,7 @@ class SelectWorkers(Page):
 
 
 class Work(Page):
-    timeout_seconds = 600 #30
+    timeout_seconds = 30
 
     @staticmethod
     def live_method(player, data):
@@ -160,13 +164,58 @@ class ResultsWait(WaitPage):
     @staticmethod
     def after_all_players_arrive(group: Group):
         # calculate payoffs
-        pass
+        for player in group.get_players():
+            if player.id_in_group == 1:
+
+                total_a_problems = sum([p.problems_solved if p.field_maybe_none('job') == C.JOB_A else 0 for p in player.group.get_players()])
+                total_b_problems = sum([p.problems_solved if p.field_maybe_none('job') == C.JOB_B else 0 for p in player.group.get_players()])
+
+                player.payoff = (.8*total_a_problems + .5*total_b_problems) - .5*total_a_problems - .25*total_b_problems
+
+            elif player.field_maybe_none('job') != None:
+                player.payoff = player.problems_solved * player.marginal_pay
 
 
-class Results(Page):
-    pass
+class AssignerResults(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.id_in_group == 1
+
+    @staticmethod
+    def vars_for_template(player: Player):
+
+        return dict(
+            total_problems_solved = sum([p.problems_solved for p in player.group.get_players()]),
+            total_a_problems = sum([p.problems_solved if p.field_maybe_none('job') == C.JOB_A else 0 for p in player.group.get_players()]),
+            total_b_problems = sum([p.problems_solved if p.field_maybe_none('job') == C.JOB_B else 0 for p in player.group.get_players()]),
+            total_a_solvers = sum([1 if p.field_maybe_none('job') == C.JOB_A else 0 for p in player.group.get_players()]),
+            total_b_solvers = sum([1 if p.field_maybe_none('job') == C.JOB_B else 0 for p in player.group.get_players()]),
+        )
+
+class SolverResults(Page):
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.id_in_group != 1
+    
+    @staticmethod
+    def vars_for_template(player: Player):
+
+        return dict(
+            total_problems_solved = sum([p.problems_solved for p in player.group.get_players()]),
+            assigner_payoff = player.group.get_player_by_id(1).payoff
+        )
+    
+class PayoffWait(WaitPage):
+    @staticmethod
+    def after_all_players_arrive(group: Group):
+        # calculate payoffs
+        for player in group.get_players():
+            results = dict(
+                round=player.round_number+1, # exclude the tutorial! 
+                role='Assigner' if player.id_in_group == 1 else 'Solver',
+                payoff=player.payoff,
+                )
+            player.participant.vars['round_results'].append(results)
 
 
-# page_sequence = [SelectWorkers]
-# page_sequence = [Work, Wait, SelectWorkers]
-page_sequence = [Vote, Wait, SelectWorkers, Wait, Work, ResultsWait, Results]
+page_sequence = [Vote, Wait, SelectWorkers, Wait, Work, ResultsWait, AssignerResults, SolverResults, PayoffWait]

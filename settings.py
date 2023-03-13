@@ -2,9 +2,9 @@ from os import environ
 
 
 SESSION_CONFIGS = [
-    # dict(
-    #     name='main', app_sequence=['main'], num_demo_participants=9
-    # ),
+    dict(
+        name='main', app_sequence=['main', 'payment'], num_demo_participants=9
+    ),
     dict(
         name='work', app_sequence=['workpilot'], num_demo_participants=1
     )
@@ -17,11 +17,11 @@ SESSION_CONFIGS = [
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=1.00, participation_fee=0.00, doc=""
+    real_world_currency_per_point=1.00, participation_fee=7.00, doc=""
 )
 
-PARTICIPANT_FIELDS = ["type", "color"]
-SESSION_FIELDS = ["blue_type_2"]
+PARTICIPANT_FIELDS = ["type", "color", "round_results"]
+SESSION_FIELDS = ["blue_type_2", "payment_round"]
 
 # ISO-639 code
 # for example: de, fr, ja, ko, zh-hans

@@ -35,13 +35,15 @@
                 {{ endif }}
             {{ endfor }}
         </div>
+
+        <h3>Drag and Drop to task</h3>
     
         <div class="row" style="height: 500px;">
             <div id="jobA" class="m-1 p-1 col container border center">
-                <h3>Job A</h3>
+                <h3>Activity A</h3>
             </div>
             <div id="jobB" class="m-1 p-1 col container border center">
-                <h3>Job B</h3>
+                <h3>Activity B</h3>
             </div>
         </div>
     </div>
@@ -49,7 +51,7 @@
     
     {{ formfields }}
 
-    <button id="validate" type="button">Next</button>
+    <button id="validate" type="button" class="btn btn-primary">Next</button>
     
     <div style="display: none;">
         <button id="submit">hidden submit</button>
@@ -99,9 +101,9 @@
                         let id = parseInt(this.target.id[1])
                         removeFromJob(id)
                         
-                        if (this.hitTest("#jobA", "90%")) {
+                        if (this.hitTest("#jobA", "100%")) {
                             selectedJobA.push(id)
-                        } else if (this.hitTest("#jobB", "90%")) {
+                        } else if (this.hitTest("#jobB", "100%")) {
                             selectedJobB.push(id)
                         } else {
                             // return to start
