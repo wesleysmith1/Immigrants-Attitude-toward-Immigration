@@ -3,12 +3,11 @@ from os import environ
 
 SESSION_CONFIGS = [
     dict(
-        name='main', app_sequence=['main', 'payment'], num_demo_participants=9
+        name='instructions', app_sequence=['instructions'], num_demo_participants=1
     ),
     dict(
-        name='work', app_sequence=['workpilot'], num_demo_participants=1
-    )
-
+        name='main', app_sequence=['main', 'payment'], num_demo_participants=9
+    ),
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs
@@ -29,7 +28,7 @@ LANGUAGE_CODE = 'en'
 
 # e.g. EUR, GBP, CNY, JPY
 REAL_WORLD_CURRENCY_CODE = 'USD'
-USE_POINTS = True
+USE_POINTS = False
 
 ROOMS = [
     dict(

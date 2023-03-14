@@ -1,5 +1,9 @@
 {{ block title }}
-    Results of round {{player.round_number}}
+    {{ if round > 0 }}
+        Results of round {{round}}
+    {{ else }}
+        Practice round
+    {{ endif }}
 {{ endblock }}
 
 {{ block content }}

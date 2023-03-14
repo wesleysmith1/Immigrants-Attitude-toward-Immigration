@@ -1,7 +1,16 @@
 {{ block title }}
-    Solve the problem below
+    {{ if round > 0 }}
+        Round {{round}} of {{C.NUM_ROUNDS}}
+    {{ else }}
+        Practice round
+    {{ endif }}
 {{ endblock }}
+
 {{ block content }}
+
+    <h3>    
+        Solve the problem below
+    </h3>
 
     <p>Now you will perform multiplication activities assigned by the Assigner for the next thirty seconds. Complete as much as you can.</p>
 

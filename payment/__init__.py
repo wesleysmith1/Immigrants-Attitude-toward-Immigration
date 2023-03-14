@@ -22,6 +22,9 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     full_name = models.StringField(label="Full name:")
+    selected_payoff = models.CurrencyField(initial=0)
+    participation = models.CurrencyField(initial=0)
+    total_payoff = models.CurrencyField(initial=0)
 
 
 # PAGES
@@ -34,8 +37,12 @@ class Payment(Page):
 
         for info in round_results:
             if info['round'] == payment_round:
-                player.payoff = info['payoff']
+                player.selected_payoff = info['payoff']
                 break
+
+        player.participation = player.session.config['participation_fee']
+
+        player.total_payoff = player.participation + player.total_payoff
 
         return dict(
             payment_round = payment_round,
@@ -44,7 +51,8 @@ class Payment(Page):
     
 
 class Thanks(Page):
-    pass
+    form_fields = ['full_name']
+    form_model = 'player'
 
 
 class Final(Page):

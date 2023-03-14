@@ -1,7 +1,16 @@
 {{ block title }}
-    Select the workers you want to be the workers.
+    {{ if round > 0 }}
+        Round {{round}} of {{C.NUM_ROUNDS}}
+    {{ else }}
+        Practice round
+    {{ endif }}
 {{ endblock }}
+
 {{ block content }}
+
+<h3>
+    Select the workers you want to be the workers.
+</h3>
 
 <style>
     .box {

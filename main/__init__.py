@@ -69,7 +69,7 @@ class Player(BasePlayer):
 def creating_session(subsession: Subsession):
 
     import random
-    subsession.session.vars['payment_round'] = random.randint(2, C.NUM_ROUNDS)
+    subsession.session.vars['payment_round'] = random.randint(1, C.NUM_ROUNDS-1)
 
     if subsession.round_number == 1:
         subsession.session.vars['blue_type_2'] = random.choices(C.BLUE_GROUP, k=2)
@@ -92,6 +92,11 @@ def creating_session(subsession: Subsession):
             player.selected = False
             
 
+def adjusted_round(round_num):
+    """adjust round number to not include tutorial. """
+    return round_num-1
+
+
 # PAGES
 class Vote(Page):
     form_model = 'player'
@@ -100,6 +105,13 @@ class Vote(Page):
     @staticmethod
     def is_displayed(player: Player):
         return player.id_in_group in C.GREEN_GROUP
+    
+    @staticmethod
+    def vars_for_template(player: Player):
+
+        return dict(
+            round=adjusted_round(player.round_number),
+        )
 
 class Wait(WaitPage):
     
@@ -125,11 +137,13 @@ class SelectWorkers(Page):
         # list of selected ids
         selected_ids = [p.id_in_group for p in player.get_others_in_group() if p.selected]
         random.shuffle(selected_ids)
-        return dict(selected_ids=selected_ids)
+        return dict(
+                selected_ids=selected_ids,
+                round=adjusted_round(player.round_number),
+            )
     
     @staticmethod
     def live_method(player, data):
-        print('received a bid from', data)
         for player in player.get_others_in_group():
             if player.id_in_group in data['job_a']:
                 player.job = C.JOB_A
@@ -156,7 +170,10 @@ class Work(Page):
     @staticmethod
     def vars_for_template(player: Player):
         number_problems = player.number_problems()
-        return dict(number_problems=number_problems)
+        return dict(
+                number_problems=number_problems,
+                round=adjusted_round(player.round_number),
+            )
     
 
 class ResultsWait(WaitPage):
@@ -190,6 +207,7 @@ class AssignerResults(Page):
             total_b_problems = sum([p.problems_solved if p.field_maybe_none('job') == C.JOB_B else 0 for p in player.group.get_players()]),
             total_a_solvers = sum([1 if p.field_maybe_none('job') == C.JOB_A else 0 for p in player.group.get_players()]),
             total_b_solvers = sum([1 if p.field_maybe_none('job') == C.JOB_B else 0 for p in player.group.get_players()]),
+            round=adjusted_round(player.round_number),
         )
 
 class SolverResults(Page):
@@ -202,16 +220,20 @@ class SolverResults(Page):
 
         return dict(
             total_problems_solved = sum([p.problems_solved for p in player.group.get_players()]),
-            assigner_payoff = player.group.get_player_by_id(1).payoff
+            assigner_payoff = player.group.get_player_by_id(1).payoff,
+            round=adjusted_round(player.round_number),
         )
     
 class PayoffWait(WaitPage):
     @staticmethod
     def after_all_players_arrive(group: Group):
+        # no payoffs for tutorial
+        if group.round_number == 1:
+            return
         # calculate payoffs
         for player in group.get_players():
             results = dict(
-                round=player.round_number+1, # exclude the tutorial! 
+                round=player.round_number-1, # exclude the tutorial! 
                 role='Assigner' if player.id_in_group == 1 else 'Solver',
                 payoff=player.payoff,
                 )

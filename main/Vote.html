@@ -1,7 +1,15 @@
 {{ block title }}
-    Do you want to include blue players in the work pool?
+    {{ if round > 0 }}
+        Round {{round}} of {{C.NUM_ROUNDS}}
+    {{ else }}
+        Practice round
+    {{ endif }}
 {{ endblock }}
 {{ block content }}
+
+    <h3>
+        Do you want to include blue players in the work pool?
+    </h3>
 
     {{ formfields }}
     {{ next_button }}
