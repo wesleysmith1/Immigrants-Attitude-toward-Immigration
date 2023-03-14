@@ -8,10 +8,6 @@
 
 {{ block content }}
 
-<h3>
-    Select the workers you want to be the workers.
-</h3>
-
 <style>
     .box {
         width: 100px;
@@ -45,7 +41,7 @@
             {{ endfor }}
         </div>
 
-        <h3>Drag and Drop to task</h3>
+        <h3 style="text-align: center;">Drag and Drop each Solver to Activity A or Activity B</h3>
     
         <div class="row" style="height: 500px;">
             <div id="jobA" class="m-1 p-1 col container border center">
@@ -95,7 +91,7 @@
                     liveSend({ job_a : selectedJobA, job_b : selectedJobB })
                     nextPage()
                 } else {
-                    alert("Please assign everyone to a job.")
+                    alert("Please assign every Solver to an Activity.")
                 }
             });
 

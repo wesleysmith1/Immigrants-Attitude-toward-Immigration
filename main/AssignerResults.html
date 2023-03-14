@@ -8,17 +8,24 @@
 
 {{ block content }}
 
+    <style>
+        div {
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+    </style>
+
     <div>
         Your role in this round was Assigner
     </div>
 
     {{if group.allow_type_two }}
         <div>
-            Decision made my Type 1: <u> Let the Type 2 solvers in.</u>
+            Tje Decision made by Type 1 Solvers: <u> Let the Type 2 solvers in.</u>
         </div>
     {{else}}
         <div>
-            Decision made my Type 1: <u> Did not let the Type 2 solvers in.</u>
+            The Decision made by Type 1 Solvers: <u> Did not let the Type 2 solvers in.</u>
         </div>
     {{endif}}
 
@@ -32,7 +39,11 @@
 
     <div>
         The total completed activities in this round are {{total_problems_solved}}.
-    </div> 
+    </div>
+    
+    <div>
+        Your payoff: {{player.payoff_points |to2}} points
+    </div>
 
     {{ next_button }}
 {{ endblock }}

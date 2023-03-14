@@ -43,12 +43,14 @@ class Player(BasePlayer):
     # job assigned by employer
     job = models.StringField(choices=['A', 'B'], initial=None)
     # type 1 players vote whether to allow type 2 to compete
-    allow_type_two = models.BooleanField(initial=None, label="Would you like Type 2 to participate?")
+    allow_type_two = models.BooleanField(initial=None, label="Would you like to admit Type 2 Solvers to the Activity?")
     selected = models.BooleanField(initial=True)
     # payment per math problem(s) completed
     marginal_pay = models.FloatField(initial=None)
     # total math plrobelms solved (1 or 2 depending on type and color)
     problems_solved = models.IntegerField(initial=0)
+    # using custom points field because otree points round
+    payoff_points = models.FloatField(initial=0)
 
     def set_color(self):
         if self.id_in_group == 1:
@@ -72,7 +74,7 @@ def creating_session(subsession: Subsession):
     subsession.session.vars['payment_round'] = random.randint(1, C.NUM_ROUNDS-1)
 
     if subsession.round_number == 1:
-        subsession.session.vars['blue_type_2'] = random.choices(C.BLUE_GROUP, k=2)
+        subsession.session.vars['blue_type_2'] = random.sample(C.BLUE_GROUP, 2)
 
     for player in subsession.get_players():
         player.participant.vars['round_results'] = []
@@ -81,7 +83,7 @@ def creating_session(subsession: Subsession):
         if player.field_maybe_none('color') == C.GREEN:
             player.type = 1
         elif player.field_maybe_none('color') == C.BLUE:
-            # = 2 if player.id_in_group in blue_type_1 else 1
+
             if player.id_in_group in subsession.session.vars['blue_type_2']:
                 player.type = 2
             else:
@@ -112,9 +114,10 @@ class Vote(Page):
         return dict(
             round=adjusted_round(player.round_number),
         )
-
-class Wait(WaitPage):
     
+class MyWaitPage(WaitPage):
+    template_name = 'main/MyWaitPage.html'
+
     @staticmethod
     def after_all_players_arrive(group: Group):
         # select player
@@ -125,6 +128,13 @@ class Wait(WaitPage):
             players = [ p for p in group.get_players() if p.field_maybe_none('type') == 2 ]
             for player in players:
                 player.selected=False
+
+
+class Wait(WaitPage):
+    pass
+
+class MyWaitPage3(WaitPage):
+    template_name = 'main/MyWaitPage3.html'
 
 
 class SelectWorkers(Page):
@@ -163,6 +173,8 @@ class Work(Page):
         else:
             player.problems_solved = player.problems_solved + 1
 
+        return {player.id_in_group: player.problems_solved}
+
     @staticmethod
     def is_displayed(player: Player):
         return player.selected
@@ -175,9 +187,9 @@ class Work(Page):
                 round=adjusted_round(player.round_number),
             )
     
-
-class ResultsWait(WaitPage):
-
+class MyWaitPage2(WaitPage):
+    template_name = 'main/MyWaitPage2.html'
+    
     @staticmethod
     def after_all_players_arrive(group: Group):
         # calculate payoffs
@@ -187,10 +199,10 @@ class ResultsWait(WaitPage):
                 total_a_problems = sum([p.problems_solved if p.field_maybe_none('job') == C.JOB_A else 0 for p in player.group.get_players()])
                 total_b_problems = sum([p.problems_solved if p.field_maybe_none('job') == C.JOB_B else 0 for p in player.group.get_players()])
 
-                player.payoff = (.8*total_a_problems + .5*total_b_problems) - .5*total_a_problems - .25*total_b_problems
+                player.payoff_points = (.8*total_a_problems + .5*total_b_problems) - .5*total_a_problems - .25*total_b_problems
 
             elif player.field_maybe_none('job') != None:
-                player.payoff = player.problems_solved * player.marginal_pay
+                player.payoff_points = player.problems_solved * player.marginal_pay
 
 
 class AssignerResults(Page):
@@ -220,7 +232,7 @@ class SolverResults(Page):
 
         return dict(
             total_problems_solved = sum([p.problems_solved for p in player.group.get_players()]),
-            assigner_payoff = player.group.get_player_by_id(1).payoff,
+            assigner_payoff = player.group.get_player_by_id(1).payoff_points,
             round=adjusted_round(player.round_number),
         )
     
@@ -235,9 +247,9 @@ class PayoffWait(WaitPage):
             results = dict(
                 round=player.round_number-1, # exclude the tutorial! 
                 role='Assigner' if player.id_in_group == 1 else 'Solver',
-                payoff=player.payoff,
+                payoff=player.payoff_points,
                 )
             player.participant.vars['round_results'].append(results)
 
 
-page_sequence = [Vote, Wait, SelectWorkers, Wait, Work, ResultsWait, AssignerResults, SolverResults, PayoffWait]
+page_sequence = [Vote, MyWaitPage, SelectWorkers, MyWaitPage3, Work, MyWaitPage2, AssignerResults, SolverResults, PayoffWait]

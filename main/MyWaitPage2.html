@@ -1,0 +1,16 @@
+{{ extends 'otree/WaitPage.html' }}
+{{ block title }}{{ title_text }}{{ endblock }}
+{{ block content }}
+    {{ body_text }}
+    <p>
+        {{ if player.field_maybe_none('type') == 2}}
+            {{ if not player.field_maybe_none('job') }}
+                You have not been admitted to performing the task. Please wait for Type 1 Solvers to complete the task.
+            {{ endif }}
+        {{ elif player.field_maybe_none('type') == 1 }}
+
+        {{ else }}
+            Please while selected solvers complete their tasks.
+        {{ endif }}
+    </p>
+{{ endblock }}

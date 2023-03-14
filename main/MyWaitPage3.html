@@ -1,0 +1,12 @@
+{{ extends 'otree/WaitPage.html' }}
+{{ block title }}{{ title_text }}{{ endblock }}
+{{ block content }}
+    {{ body_text }}
+    <p>
+        {{ if player.field_maybe_none('type') == 2 or player.field_maybe_none('type') == 1 }}
+            Please wait while the Assigner assigns the Solvers to the Activities.
+        {{ else }}
+            
+        {{ endif }}
+    </p>
+{{ endblock }}

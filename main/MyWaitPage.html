@@ -1,0 +1,14 @@
+{{ extends 'otree/WaitPage.html' }}
+{{ block title }}{{ title_text }}{{ endblock }}
+{{ block content }}
+    {{ body_text }}
+    <p>
+        {{ if player.field_maybe_none('type') == 2}}
+            You have been assigned the role of Type 2. Please wait while the Type 1 Solvers decide whether they will admit the Type 2 Solvers or not. 
+        {{ elif player.field_maybe_none('type') == 1 }}
+            Please wait while the Type 1 solvers decide whether they will admit the Type 2 Solvers or not.
+        {{ else }}
+            You have been assigned the role of the Assigner. Please wait while the Type 1 Solvers decide whether they will admit the Type 2 Solvers or not.
+        {{ endif }}
+    </p>
+{{ endblock }}

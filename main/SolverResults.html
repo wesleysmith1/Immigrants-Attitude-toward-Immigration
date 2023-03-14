@@ -8,27 +8,34 @@
 
 {{ block content }}
 
+    <style>
+        div {
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+    </style>
+
     <div>
         Your role in this round was Solver
     </div>
 
     {{if group.allow_type_two }}
         <div>
-            Decisions made by the randomly chosen Type 1 solver in the decision stage: <u> Let the Type 2 solvers in.</u>
+            Decisions made by the randomly chosen Type 1 solver in the decision stage - <u> Admitted the Type 2 Solvers.</u>
         </div>
     {{else}}
         <div>
-            Decisions made by the randomly chosen Type 1 solver in the decision stage: <u> did not let the Type 2 solvers in.</u>
+            Decisions made by the randomly chosen Type 1 solver in the decision stage - <u> Did not admit the Type 2 Solvers.</u>
         </div>
     {{endif}}
 
     {{ if player.field_maybe_none('job') != None }}
         <div>
-            You were selected for Job {{player.job}}
+            You were selected for Activity {{player.job}}
         </div>
     {{ else }}
         <div>
-            You were not selected
+            You were not admitted to perform the Activity.
         </div>
     {{ endif }}
 
@@ -39,11 +46,11 @@
     <h3>Payoffs</h3>
 
     <div>
-        Your payoff: {{player.payoff}}
+        Your payoff: {{player.payoff_points|to2}} points
     </div>
 
     <div>
-        Assigner's payoff: {{assigner_payoff}}
+        Assigner's payoff: {{assigner_payoff|to2}} points
     </div>
 
     {{ next_button }}

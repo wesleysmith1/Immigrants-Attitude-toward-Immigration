@@ -10,6 +10,8 @@ class C(BaseConstants):
     NAME_IN_URL = 'payment'
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 1
+    # point to dollar conversion
+    POINT_CONVERSION = 3
 
 
 class Subsession(BaseSubsession):
@@ -22,7 +24,7 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     full_name = models.StringField(label="Full name:")
-    selected_payoff = models.CurrencyField(initial=0)
+    selected_payoff = models.FloatField(initial=0)
     participation = models.CurrencyField(initial=0)
     total_payoff = models.CurrencyField(initial=0)
 
@@ -42,7 +44,7 @@ class Payment(Page):
 
         player.participation = player.session.config['participation_fee']
 
-        player.total_payoff = player.participation + player.total_payoff
+        player.total_payoff = player.participation + player.selected_payoff * C.POINT_CONVERSION
 
         return dict(
             payment_round = payment_round,

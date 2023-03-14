@@ -4,7 +4,7 @@
 {{ block content }}
 
     <p>
-        Round {{payment_round}} was chosen for payment. This means you earned {{player.selected_payoff}} from this game.
+        Round {{payment_round}} was chosen for payment. This means you earned {{player.selected_payoff|to2}} points from this game.
     </p>
 
     <p>
@@ -24,7 +24,7 @@
                 <tr {{if i.round == payment_round}}class="table-warning"{{endif}}>
                     <td>{{i.round}}</td>
                     <td>{{i.role}}</td>
-                    <td>{{i.payoff}}</td>
+                    <td>{{i.payoff |to2}} points</td>
                 </tr>
             {{ endfor }}
         </tbody>
