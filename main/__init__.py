@@ -106,7 +106,7 @@ class Vote(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.id_in_group in C.GREEN_GROUP
+        return player.type == 1
     
     @staticmethod
     def vars_for_template(player: Player):
