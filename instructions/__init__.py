@@ -35,7 +35,7 @@ class Group(BaseGroup):
 class Player(BasePlayer):
     
     q1 = models.IntegerField(
-        label="Suppose you are a Type 1 solver in Activity A. In that case, each Activity involves",
+        label="Suppose you are a Type 1 Solver in Activity A. In that case, each Activity involves",
         choices=[
             [1, "Finding the product of two randomly chosen single-digit numbers (e.g.: 9*7)"],
             [2, "Finding the product of two randomly chosen double-digit numbers (e.g.: 27*49)"],
@@ -44,7 +44,7 @@ class Player(BasePlayer):
         widget=widgets.RadioSelect,
     )
     q2 = models.IntegerField(
-        label="Suppose you are a Type 2 solver in Activity A. In that case, each question involves",
+        label="Suppose you are a Type 2 Solver in Activity A. In that case, each question involves",
         choices=[
             [1, 'Finding the product of two randomly chosen single-digit numbers (e.g.: 4*9)'],
             [2, 'Finding the product of two randomly chosen double-digit numbers (e.g.: 43*12)'],
@@ -54,7 +54,7 @@ class Player(BasePlayer):
 
     )
     q3 = models.IntegerField(
-        label="Suppose you are a Type 1 solver in Activity B. In that case, each Activity involves",
+        label="Suppose you are a Type 1 Solver in Activity B. In that case, each Activity involves",
         choices=[
             [1, 'Finding the product of two randomly chosen single-digit numbers (e.g.: 7*4)'],
             [2, 'Finding the product of two randomly chosen double-digit numbers (e.g.: 27*49)'],
@@ -63,7 +63,7 @@ class Player(BasePlayer):
         widget=widgets.RadioSelect,
     )
     q4 = models.IntegerField(
-        label="Suppose you are a Type 2 solver in Activity B. In that case, each Activity involves",
+        label="Suppose you are a Type 2 Solver in Activity B. In that case, each Activity involves",
         choices=[
             [1, 'Finding the product of two randomly chosen single-digit numbers (e.g.: 6*7)'],
             [2, 'Finding the product of two randomly chosen double-digit numbers (e.g.: 34*25)'],

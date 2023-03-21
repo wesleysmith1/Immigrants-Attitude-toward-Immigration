@@ -8,6 +8,9 @@ SESSION_CONFIGS = [
     dict(
         name='main', app_sequence=['main', 'payment'], num_demo_participants=9
     ),
+    dict(
+        name='full_experiment', app_sequence=['instructions', 'main', 'payment'], num_demo_participants=9
+    ),
 ]
 
 # if you set a property in SESSION_CONFIG_DEFAULTS, it will be inherited by all configs
