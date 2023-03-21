@@ -106,7 +106,7 @@ class Vote(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.type == 1
+        return player.field_maybe_none('type') == 1
     
     @staticmethod
     def vars_for_template(player: Player):
